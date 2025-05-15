@@ -16,9 +16,40 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     public async Task<CatalogResult> GetCatalogItems(int pageIndex, int pageSize, int? brand, int? type)
     {
-        var uri = GetAllCatalogItemsUri(remoteServiceBaseUrl, pageIndex, pageSize, brand, type);
+        string filterQs = string.Empty;
+        if (type.HasValue)
+        {
+            filterQs += $"type={type.Value}&";
+        }
+        if (brand.HasValue)
+        {
+            filterQs += $"brand={brand.Value}&";
+        }
+
+        var uri = $"{remoteServiceBaseUrl}items?{filterQs}pageIndex={pageIndex}&pageSize={pageSize}";
         var result = await httpClient.GetFromJsonAsync<CatalogResult>(uri);
         return result!;
+    }
+
+    public async Task<List<CatalogItemObject>> GetCatalogItemObjects(int pageIndex, int pageSize, int? brand, int? type)
+    {
+        string filterQs = string.Empty;
+        if (type.HasValue)
+        {
+            filterQs += $"type={type.Value}&";
+        }
+        if (brand.HasValue)
+        {
+            filterQs += $"brand={brand.Value}&";
+        }
+
+        var uri = $"{remoteServiceBaseUrl}items?{filterQs}pageIndex={pageIndex}&pageSize={pageSize}";
+        var result = await httpClient.GetFromJsonAsync<CatalogResult>(uri);
+
+        var newRes = result?.Data
+            .Select(item => new CatalogItemObject(item))
+            .ToList() ?? new List<CatalogItemObject>();
+        return newRes;
     }
 
     public async Task<List<CatalogItem>> GetCatalogItems(IEnumerable<int> ids)
@@ -37,31 +68,11 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     public async Task<IEnumerable<CatalogBrand>> GetBrands()
     {
-        var uri = $"{remoteServiceBaseUrl}catalogBrands";
-        var result = await httpClient.GetFromJsonAsync<CatalogBrand[]>(uri);
-        return result!;
+        throw new NotImplementedException("This method is not implemented yet.");
     }
 
     public async Task<IEnumerable<CatalogItemType>> GetTypes()
     {
-        var uri = $"{remoteServiceBaseUrl}catalogTypes";
-        var result = await httpClient.GetFromJsonAsync<CatalogItemType[]>(uri);
-        return result!;
-    }
-
-    private static string GetAllCatalogItemsUri(string baseUri, int pageIndex, int pageSize, int? brand, int? type)
-    {
-        string filterQs = string.Empty;
-
-        if (type.HasValue)
-        {
-            filterQs += $"type={type.Value}&";
-        }
-        if (brand.HasValue)
-        {
-            filterQs += $"brand={brand.Value}&";
-        }
-
-        return $"{baseUri}items?{filterQs}pageIndex={pageIndex}&pageSize={pageSize}";
+        throw new NotImplementedException("This method is not implemented yet.");
     }
 }
