@@ -25,6 +25,7 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
         {
             filterQs += $"brand={brand.Value}&";
         }
+
         var uri = $"{remoteServiceBaseUrl}items?{filterQs}pageIndex={pageIndex}&pageSize={pageSize}";
         var result = await httpClient.GetFromJsonAsync<CatalogResult>(uri);
         return result!;
@@ -66,7 +67,7 @@ public class CatalogService(HttpClient httpClient) : ICatalogService
 
     public async Task<IEnumerable<CatalogBrand>> GetBrands()
     {
-        // Fetching brands from the remote service using HttpClient
+        // Todo: Implement in a similar way as GetCatalogItems using GetFromJsonAsync.
         throw new NotImplementedException("This method is not implemented yet.");
     }
 
